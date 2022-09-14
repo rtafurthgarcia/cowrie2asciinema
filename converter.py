@@ -2,11 +2,17 @@ from distutils.cmd import Command
 from playlog import playlog
 from asciinema import record
 
+import pyinotify
+
 import getopt
 import os
 import sys
 
-def help(brief=0):
+class EventHandler(pyinotify.ProcessEvent):
+    def process_IN_CREATE(self, event):
+        print ("Creating:%s" % event.pathname)
+
+def help():
     print(
         "\nUsage: %s <directory-to-watch> <output-directory>\n"
         % os.path.basename(sys.argv[0])
@@ -72,8 +78,21 @@ if __name__ == "__main__":
 
     try:
         for directory in args:
-            print(directory)
-            #playlog(logfd, settings)
+            if not os.path.isdir(directory): raise OSError()
+
+        directory_to_watch = args[0]
+        output_directory = args[1]
+
+        wm = pyinotify.WatchManager()
+
+        mask = pyinotify.IN_CREATE
+
+        handler = EventHandler()
+        notifier = pyinotify.Notifier(wm, handler)
+        wdd = wm.add_watch(directory_to_watch, mask, rec=True)
+
+        notifier.loop()
+
     except OSError:
-        print("\n\n[!] Couldn't open log file (%s)!" % directory)
+        print("\n[!] Directory (%s) doesn't exist !" % directory)
         sys.exit(2)

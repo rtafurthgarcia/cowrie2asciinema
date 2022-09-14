@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 asciinema = "^2.2.0"
-pyinotifyd = "^0.0.7"
+pyinotify = "^0.9.6"
 
 
 [build-system]
