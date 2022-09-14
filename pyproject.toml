@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "cowrie2asciinema"
+version = "0.0.1"
+description = "Converts Cowrie's UML compatible files to a format understood by ASCIInema"
+authors = ["Richard Tafurth-Garcia <projects@cdstm.ch>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asciinema = "^2.2.0"
+pyinotifyd = "^0.0.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

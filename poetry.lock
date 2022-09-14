@@ -1,0 +1,44 @@
+[[package]]
+name = "asciinema"
+version = "2.2.0"
+description = "Terminal session recorder"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "pyinotify"
+version = "0.9.6"
+description = "Linux filesystem events monitoring"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "pyinotifyd"
+version = "0.0.7"
+description = "Monitoring filesystems events with inotify on Linux and execute tasks."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+pyinotify = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.10"
+content-hash = "ab99cea86a3208cfb0cfb61f062ef71fd274eed124f50939b4983cc11f75f460"
+
+[metadata.files]
+asciinema = [
+    {file = "asciinema-2.2.0-py3-none-any.whl", hash = "sha256:6d601b48d76976869b5d1ffab98dff40cf3b2facea2b64a6f69db80df4fb0f69"},
+    {file = "asciinema-2.2.0.tar.gz", hash = "sha256:5ec5c4e5d3174bb7c559e45db4680eb8fa6c40c058fa5e5005ee96a1d99737b4"},
+]
+pyinotify = [
+    {file = "pyinotify-0.9.6.tar.gz", hash = "sha256:9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4"},
+]
+pyinotifyd = [
+    {file = "pyinotifyd-0.0.7-py3-none-any.whl", hash = "sha256:154488602fb2a46fda86e67e0b35dd94322166633c8ae473650d24f4faabb7b7"},
+    {file = "pyinotifyd-0.0.7.tar.gz", hash = "sha256:89ca7eb2b06115601f5501e6941dfb178fca8559fd78d6ebd564fc647daf8f96"},
+]
