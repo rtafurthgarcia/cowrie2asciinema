@@ -8,9 +8,34 @@ import getopt
 import os
 import sys
 
+RECORD_SETTINGS = {
+    "tail": 0,
+    "maxdelay": 3.0,
+    "input_only": 0,
+    "both_dirs": 0,
+    "colorify": 0,
+}
+
+settings = {
+    "host": "localhost",
+    "port": 5432,
+    "username": "root",
+    "password": "",
+    "schema": "",
+    "directory_to_watch": "",
+    "output_directory": "",
+    "idle_time_limit": 15
+}
+
 class EventHandler(pyinotify.ProcessEvent):
     def process_IN_CREATE(self, event):
-        print ("Creating:%s" % event.pathname)
+        print("Converting file %s\n" % event.pathname)
+        converted_file_path = os.path.join(settings["output_directory"], os.path.basename(event.pathname) + ".cast")
+        record(
+            command="python3 playlog.py %s" % event.pathname, 
+            path_=converted_file_path, 
+            idle_time_limit=settings["idle_time_limit"],
+        )
 
 def help():
     print(
@@ -36,23 +61,16 @@ def help():
     print("  -p, --password     PostgreSQL password")
     print("  -s, --schema       PostgreSQL schema\n")
 
+    print("  -l, --limit        Idle time limit in seconds\n")
+
     print("  -h, --help         display this help\n")
 
     sys.exit(1)
 
 
 if __name__ == "__main__":
-
-    settings = {
-        "host": "localhost",
-        "port": 5432,
-        "username": "root",
-        "password": "",
-        "schema": "",
-    }
-
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], "h:HPups:", ["help"])
+        optlist, args = getopt.getopt(sys.argv[1:], "h:HPupsl:", ["help"])
     except getopt.GetoptError as error:
         print("Error: %s\n" % error)
         help()
@@ -70,18 +88,20 @@ if __name__ == "__main__":
             settings["password"] = value
         elif argument in ["-s", "--schema"]:
             settings["schema"] = value
+        elif argument in ["-l", "--limit"]:
+            settings["idle_time_limit"] = int(value)
         elif argument in ["-h", "--help"]:
             help()
 
-    if len(args) < 1:
+    if len(args) < 2:
         help()
 
     try:
         for directory in args:
             if not os.path.isdir(directory): raise OSError()
 
-        directory_to_watch = args[0]
-        output_directory = args[1]
+        settings["directory_to_watch"] = args[0]
+        settings["output_directory"] = args[1]
 
         wm = pyinotify.WatchManager()
 
@@ -89,7 +109,7 @@ if __name__ == "__main__":
 
         handler = EventHandler()
         notifier = pyinotify.Notifier(wm, handler)
-        wdd = wm.add_watch(directory_to_watch, mask, rec=True)
+        wdd = wm.add_watch(settings["directory_to_watch"], mask, rec=True)
 
         notifier.loop()
 
